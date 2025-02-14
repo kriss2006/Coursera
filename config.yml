@@ -1,0 +1,38 @@
+template: Hello, %s!
+defaultName: Stranger
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 3002
+  adminConnectors:
+    - type: http
+      port: 3003
+
+database:
+  driverClass: com.mysql.cj.jdbc.Driver
+
+  user: root
+
+  password: 2024
+
+  url: jdbc:mysql://localhost:3306/coursera?useSSL=false&serverTimezone=UTC
+
+  properties:
+    charSet: UTF-8
+
+  maxWaitForConnection: 1s
+
+  validationQuery: "/* MyService Health Check */ SELECT 1"
+
+  validationQueryTimeout: 3s
+
+  minSize: 8
+
+  maxSize: 32
+
+  checkConnectionWhileIdle: false
+
+  evictionInterval: 10s
+
+  minIdleTime: 1 minute
