@@ -1,6 +1,5 @@
 package org.example.resources;
 
-import com.codahale.metrics.annotation.Timed;
 import org.example.api.Saying;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -31,17 +30,4 @@ public class HelloWorldResource {
         final String value = String.format(template, name.orElse(defaultName));
         return new Saying(counter.incrementAndGet(), value);
     }
-//
-//    public HelloWorldResource(String template, String defaultName) {
-//        this.template = template;
-//        this.defaultName = defaultName;
-//        this.counter = new AtomicLong();
-//    }
-//
-//    @GET
-//    @Timed
-//    public Saying sayHello(@QueryParam("name") Optional<String> name) {
-//        final String value = String.format(template, name.orElse(defaultName));
-//        return new Saying(counter.incrementAndGet(), value);
-//    }
 }
