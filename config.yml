@@ -16,7 +16,7 @@ database:
 
   password: 2024
 
-  url: jdbc:mysql://localhost:3306/coursera?useSSL=false&serverTimezone=UTC
+  url: jdbc:mysql://localhost:3306/coursera?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
 
   properties:
     charSet: UTF-8

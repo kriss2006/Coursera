@@ -3,11 +3,13 @@ package org.example.db;
 import org.example.models.Student;
 
 import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
 
+@RegisterBeanMapper(Student.class)
 public interface StudentDAO {
     @SqlQuery("SELECT * FROM students")
     List<Student> getAllStudents();
