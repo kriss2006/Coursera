@@ -11,15 +11,15 @@ import java.util.Optional;
 public class StudentService {
     private final StudentDAO studentDAO;
 
-    public void registerStudent(Student student) {
-        studentDAO.addStudent(student.getPin(), student.getFirstName(), student.getLastName());
+    public List<Student> getAllStudents() {
+        return studentDAO.getAllStudents();
     }
 
     public Optional<Student> getStudentByPin(String pin) {
         return Optional.ofNullable(studentDAO.getStudentByPin(pin));
     }
 
-    public List<Student> getAllStudents() {
-        return studentDAO.getAllStudents();
+    public void registerStudent(Student student) {
+        studentDAO.addStudent(student.getPin(), student.getFirstName(), student.getLastName());
     }
 }

@@ -1,6 +1,7 @@
 package org.example.db;
 
 import org.example.models.Course;
+import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -8,8 +9,8 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
 
+@RegisterConstructorMapper(Course.class)
 public interface CourseDAO {
-
     @SqlQuery("SELECT * FROM courses")
     List<Course> getAllCourses();
 
