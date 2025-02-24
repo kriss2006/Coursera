@@ -25,16 +25,19 @@ public class CourseraApplication extends Application <CourseraConfiguration>{
         InstructorDAO instructorDAO = jdbi.onDemand(InstructorDAO.class);
         CourseDAO courseDAO = jdbi.onDemand(CourseDAO.class);
         EnrollmentDAO enrollmentDAO = jdbi.onDemand(EnrollmentDAO.class);
+        ReportDAO reportDAO = jdbi.onDemand(ReportDAO.class);
 
         StudentService studentService = new StudentService(studentDAO);
         InstructorService instructorService = new InstructorService(instructorDAO);
         CourseService courseService = new CourseService(courseDAO);
         EnrollmentService enrollmentService = new EnrollmentService(enrollmentDAO);
+        ReportService reportService = new ReportService(reportDAO);
 
         environment.jersey().register(new StudentResource(studentService));
         environment.jersey().register(new InstructorResource(instructorService));
         environment.jersey().register(new CourseResource(courseService));
         environment.jersey().register(new EnrollmentResource(enrollmentService));
+        environment.jersey().register(new ReportResource(reportService));
 
         environment.healthChecks().register("database", new DatabaseHealthCheck(jdbi));
     }
