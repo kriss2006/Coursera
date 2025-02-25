@@ -7,6 +7,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,6 @@ public class ReportResource {
                                       @QueryParam("endDate") String endDateStr) {
 
         Optional<List<StudentReport>> reports = reportService.getStudentReports(pins, minCredit, startDateStr, endDateStr);
-        return reports.map(Response::ok).orElse(Response.status(Response.Status.NOT_FOUND)).build();
+        return Response.ok(reports.orElse(Collections.emptyList())).build();
     }
 }
