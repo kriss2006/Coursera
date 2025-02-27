@@ -1,5 +1,6 @@
 package org.example.resources;
 
+import jakarta.annotation.security.PermitAll;
 import org.example.models.StudentReport;
 import org.example.services.ReportService;
 
@@ -21,6 +22,7 @@ public class ReportResource {
         this.reportService = reportService;
     }
 
+    @PermitAll
     @GET
     public Response getStudentReports(@QueryParam("pins") String pins,
                                       @QueryParam("minCredit") int minCredit,
