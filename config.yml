@@ -34,5 +34,4 @@ database:
 
   minIdleTime: 1 minute
 
-#jwtSecret: "12345"
-
+jwtSecret: d823zebra772632gdb3333s2s2s22ss2s2

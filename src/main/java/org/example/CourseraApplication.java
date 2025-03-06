@@ -1,12 +1,12 @@
 package org.example;
 
-import com.google.common.collect.ImmutableMap;
-import io.dropwizard.auth.AuthFilter;
-import io.dropwizard.auth.PolymorphicAuthDynamicFeature;
+import io.dropwizard.auth.*;
+import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Environment;
 import io.dropwizard.jdbi3.JdbiFactory;
-import org.example.auth.JwtFilterUtil;
+import org.example.auth.JwtAuthenticator;
+import org.example.auth.JwtUtils;
 import org.example.auth.UserToken;
 import org.jdbi.v3.core.Jdbi;
 
@@ -15,9 +15,6 @@ import org.example.health.DatabaseHealthCheck;
 import org.example.db.*;
 import org.example.services.*;
 import org.example.resources.*;
-import org.jose4j.jwt.consumer.JwtContext;
-import io.dropwizard.auth.PolymorphicAuthValueFactoryProvider;
-import com.google.common.collect.ImmutableSet;
 
 public class CourseraApplication extends Application<CourseraConfiguration> {
     public static void main(String[] args) throws Exception {
@@ -27,7 +24,9 @@ public class CourseraApplication extends Application<CourseraConfiguration> {
     @Override
     public void run(CourseraConfiguration configuration, Environment environment) {
         registerResources(environment, configuration);
-        registerAuthFilters(environment);
+        JwtUtils.initialize(configuration.getJwtSecret());
+
+        registerAuth(environment);
     }
 
     private void registerResources(Environment environment, CourseraConfiguration configuration) {
@@ -58,17 +57,13 @@ public class CourseraApplication extends Application<CourseraConfiguration> {
         environment.jersey().register(new LoginResource(userService));
     }
 
-    private void registerAuthFilters(Environment environment) {
-        JwtFilterUtil jwtFilterUtil = new JwtFilterUtil();
-        final AuthFilter<JwtContext, UserToken> jwtFilter = jwtFilterUtil.buildJwtAuthFilter();
+    private void registerAuth(Environment environment) {
+        environment.jersey().register(new AuthDynamicFeature(
+                new OAuthCredentialAuthFilter.Builder<UserToken>()
+                        .setAuthenticator(new JwtAuthenticator())
+                        .setPrefix("Bearer")
+                        .buildAuthFilter()));
 
-        final PolymorphicAuthDynamicFeature<UserToken> feature = new PolymorphicAuthDynamicFeature<>(
-                ImmutableMap.of(UserToken.class, jwtFilter));
-
-        final PolymorphicAuthValueFactoryProvider.Binder<UserToken> binder = new PolymorphicAuthValueFactoryProvider.Binder<>(
-                ImmutableSet.of(UserToken.class));
-
-        environment.jersey().register(feature);
-        environment.jersey().register(binder);
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(UserToken.class));
     }
 }

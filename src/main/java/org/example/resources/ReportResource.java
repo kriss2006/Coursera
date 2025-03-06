@@ -1,6 +1,7 @@
 package org.example.resources;
 
-import jakarta.annotation.security.PermitAll;
+import io.dropwizard.auth.Auth;
+import org.example.auth.UserToken;
 import org.example.models.StudentReport;
 import org.example.services.ReportService;
 
@@ -22,12 +23,14 @@ public class ReportResource {
         this.reportService = reportService;
     }
 
-    @PermitAll
     @GET
-    public Response getStudentReports(@QueryParam("pins") String pins,
+    public Response getStudentReports(@Auth UserToken userToken,
+                                      @QueryParam("pins") String pins,
                                       @QueryParam("minCredit") int minCredit,
                                       @QueryParam("startDate") String startDateStr,
                                       @QueryParam("endDate") String endDateStr) {
+
+        System.out.println("Authenticated user: " + userToken.getUsername());
 
         Optional<List<StudentReport>> reports = reportService.getStudentReports(pins, minCredit, startDateStr, endDateStr);
         return Response.ok(reports.orElse(Collections.emptyList())).build();

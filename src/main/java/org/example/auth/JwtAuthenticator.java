@@ -2,26 +2,19 @@ package org.example.auth;
 
 import io.dropwizard.auth.Authenticator;
 import org.jose4j.jwt.JwtClaims;
-import org.jose4j.jwt.consumer.JwtContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-public class JwtAuthenticator implements Authenticator<JwtContext, UserToken> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticator.class);
-
+public class JwtAuthenticator implements Authenticator<String, UserToken> {
     @Override
-    public Optional<UserToken> authenticate(JwtContext context) {
+    public Optional<UserToken> authenticate(String token) {
         try {
-            JwtClaims claims = context.getJwtClaims();
-
+            JwtClaims claims = JwtUtils.parseToken(token);
             int id = Integer.parseInt(claims.getSubject());
-            String username = (String) claims.getClaimValue("username");
+            String username = claims.getStringClaimValue("username");
 
             return Optional.of(new UserToken(id, username));
         } catch (Exception e) {
-            LOGGER.warn("msg=Failed to authorise user: {}", e.getMessage(), e);
             return Optional.empty();
         }
     }

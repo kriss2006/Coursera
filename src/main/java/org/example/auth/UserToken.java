@@ -15,6 +15,4 @@ public class UserToken implements Principal {
     public String getName() {
         return username;
     }
-
-
 }
