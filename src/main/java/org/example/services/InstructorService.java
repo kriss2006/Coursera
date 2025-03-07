@@ -19,7 +19,7 @@ public class InstructorService {
         return Optional.ofNullable(instructorDAO.getInstructorById(id));
     }
 
-    public int registerInstructor(Instructor instructor) {
+    public int addInstructor(Instructor instructor) {
         return instructorDAO.addInstructor(instructor.getFirstName(), instructor.getLastName());
     }
 }

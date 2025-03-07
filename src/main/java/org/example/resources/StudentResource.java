@@ -1,5 +1,8 @@
 package org.example.resources;
 
+import io.dropwizard.auth.Auth;
+
+import org.example.auth.UserToken;
 import org.example.models.Student;
 import org.example.services.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -17,23 +20,30 @@ import java.util.Optional;
 public class StudentResource {
     private final StudentService studentService;
 
-    @POST
-    public Response registerStudent(Student student) {
-        studentService.registerStudent(student);
-        return Response.status(Response.Status.CREATED).build();
+    @GET
+    public List<Student> getAllStudents(@Auth UserToken userToken) {
+        System.out.println("Authenticated user: " + userToken.getUsername());
+
+        return studentService.getAllStudents();
     }
 
     @GET
     @Path("/{pin}")
-    public Response getStudentByPin(@PathParam("pin") String pin) {
+    public Response getStudentByPin(@Auth UserToken userToken,
+                                    @PathParam("pin") String pin) {
+        System.out.println("Authenticated user: " + userToken.getUsername());
+
         Optional<Student> student = studentService.getStudentByPin(pin);
         return student.map(Response::ok)
                 .orElse(Response.status(Response.Status.NOT_FOUND))
                 .build();
     }
 
-    @GET
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
+    @POST
+    public Response registerStudent(@Auth UserToken userToken, Student student) {
+        System.out.println("Authenticated user: " + userToken.getUsername());
+
+        studentService.registerStudent(student);
+        return Response.status(Response.Status.CREATED).build();
     }
 }

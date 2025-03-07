@@ -19,7 +19,7 @@ public class CourseService {
         return Optional.ofNullable(courseDAO.getCourseById(id));
     }
 
-    public int registerCourse(Course course) {
+    public int addCourse(Course course) {
         return courseDAO.addCourse(course.getName(), course.getInstructorId(), course.getTotalTime(), course.getCredit());
     }
 }
