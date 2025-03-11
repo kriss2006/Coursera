@@ -5,6 +5,9 @@ import io.dropwizard.auth.oauth.OAuthCredentialAuthFilter;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Environment;
 import io.dropwizard.jdbi3.JdbiFactory;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.FilterRegistration;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.example.auth.JwtAuthenticator;
 import org.example.auth.JwtUtils;
 import org.example.auth.UserToken;
@@ -15,6 +18,8 @@ import org.example.health.DatabaseHealthCheck;
 import org.example.db.*;
 import org.example.services.*;
 import org.example.resources.*;
+
+import java.util.EnumSet;
 
 public class CourseraApplication extends Application<CourseraConfiguration> {
     public static void main(String[] args) throws Exception {
@@ -27,6 +32,7 @@ public class CourseraApplication extends Application<CourseraConfiguration> {
         JwtUtils.initialize(configuration.getJwtSecret());
 
         registerAuth(environment);
+        configureCors(environment);
     }
 
     private void registerResources(Environment environment, CourseraConfiguration configuration) {
@@ -65,5 +71,16 @@ public class CourseraApplication extends Application<CourseraConfiguration> {
                         .buildAuthFilter()));
 
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(UserToken.class));
+    }
+
+    private void configureCors(Environment environment) {
+        final FilterRegistration.Dynamic cors = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
+
+        cors.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "http://localhost:3000");
+        cors.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "X-Requested-With,Content-Type,Accept,Origin,Authorization");
+        cors.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "OPTIONS,GET,PUT,POST,DELETE,HEAD");
+        cors.setInitParameter(CrossOriginFilter.ALLOW_CREDENTIALS_PARAM, "true");
+
+        cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
     }
 }
