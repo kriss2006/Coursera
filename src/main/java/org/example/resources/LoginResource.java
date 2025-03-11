@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.example.auth.JwtUtils;
 import org.example.models.User;
+import org.example.resources.dto.ErrorResponse;
 import org.example.resources.dto.LoginRequest;
 import org.example.services.UserService;
 import org.jose4j.lang.JoseException;
@@ -37,11 +38,11 @@ public class LoginResource {
                     return Response.ok(new LoginResponse(token)).build();
                 } catch (JoseException e) {
                     return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                            .entity("Token generation failed").build();
+                            .entity(new ErrorResponse("Token generation failed")).build();
                 }
             }
         }
 
-        return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+        return Response.status(Response.Status.UNAUTHORIZED).entity(new ErrorResponse("Invalid credentials")).build();
     }
 }
