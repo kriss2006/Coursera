@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 public class ReportService {
 
     private final ReportDAO reportDAO;
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Format for parsing
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public Optional<List<StudentReport>> getStudentReports(String rawPins, Integer minCredit, String startDateStr, String endDateStr) {
+    public Optional<List<StudentReport>> getStudentReports(String rawPins, Integer minCredit, String startDateStr, String endDateStr, String studentName, Integer totalCredit) {
         List<String> pins = (rawPins == null || rawPins.trim().isEmpty())
                 ? Collections.emptyList()
                 : Arrays.asList(rawPins.split(","));
@@ -34,7 +34,21 @@ public class ReportService {
             return Optional.empty();
         }
 
-        return Optional.of(transformFlatReports(flatReports));
+        List<StudentReport> studentReports = transformFlatReports(flatReports);
+
+        if (studentName != null && !studentName.trim().isEmpty()) {
+            studentReports = studentReports.stream()
+                    .filter(report -> report.getStudentName().equalsIgnoreCase(studentName))
+                    .collect(Collectors.toList());
+        }
+
+        if (totalCredit != null) {
+            studentReports = studentReports.stream()
+                    .filter(report -> report.getTotalCredit() == totalCredit)
+                    .collect(Collectors.toList());
+        }
+
+        return Optional.of(studentReports);
     }
 
     private LocalDate parseDate(String dateStr) {

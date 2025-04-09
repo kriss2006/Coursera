@@ -28,11 +28,13 @@ public class ReportResource {
                                       @QueryParam("pins") String pins,
                                       @QueryParam("minCredit") int minCredit,
                                       @QueryParam("startDate") String startDateStr,
-                                      @QueryParam("endDate") String endDateStr) {
+                                      @QueryParam("endDate") String endDateStr,
+                                      @QueryParam("studentName") String studentName,
+                                      @QueryParam("totalCredit") Integer totalCredit) {
 
         System.out.println("Authenticated user: " + userToken.getUsername());
 
-        Optional<List<StudentReport>> reports = reportService.getStudentReports(pins, minCredit, startDateStr, endDateStr);
+        Optional<List<StudentReport>> reports = reportService.getStudentReports(pins, minCredit, startDateStr, endDateStr, studentName, totalCredit);
         return Response.ok(reports.orElse(Collections.emptyList())).build();
     }
 }
