@@ -3,6 +3,7 @@ package org.example.resources;
 import lombok.RequiredArgsConstructor;
 import org.example.auth.UserToken;
 import org.example.models.Course;
+import org.example.resources.dto.EnrollmentRequest;
 import org.example.services.EnrollmentService;
 
 import jakarta.ws.rs.*;
@@ -29,10 +30,10 @@ public class EnrollmentResource {
     }
 
     @POST
-    public Response enrollStudent(@Auth UserToken userToken, @QueryParam("studentPin") String studentPin, @QueryParam("courseId") int courseId) {
+    public Response enrollStudent(@Auth UserToken userToken, EnrollmentRequest enrollmentRequest) {
         System.out.println("Authenticated user: " + userToken.getUsername());
         try {
-            enrollmentService.enrollStudent(studentPin, courseId);
+            enrollmentService.enrollStudent(enrollmentRequest.getStudentPin(), enrollmentRequest.getCourseId());
             return Response.status(Response.Status.CREATED).entity("Enrollment successful").build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Failed to enroll student: " + e.getMessage()).build();
